@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/endeveit/guesslanguage"
+	"github.com/kapsteur/franco"
 	"github.com/taruti/langdetect"
 )
 
@@ -83,6 +84,28 @@ func BenchmarkGL32k(b *testing.B) {
 			if err != nil {
 				b.Error(err)
 			}
+		}
+	}
+}
+
+func BenchmarkFR8k(b *testing.B) {
+	for _, t := range tests {
+		reader := NewReader(t.fn)
+		buf := new(bytes.Buffer)
+		io.CopyN(buf, reader, 8*1024)
+		for n := 0; n < b.N; n++ {
+			franco.DetectOne(buf.String())
+		}
+	}
+}
+
+func BenchmarkFR32k(b *testing.B) {
+	for _, t := range tests {
+		reader := NewReader(t.fn)
+		buf := new(bytes.Buffer)
+		io.CopyN(buf, reader, 32*1024)
+		for n := 0; n < b.N; n++ {
+			franco.DetectOne(buf.String())
 		}
 	}
 }
