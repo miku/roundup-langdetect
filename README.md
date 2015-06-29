@@ -10,23 +10,32 @@ Measure performance of various language detection libraries.
 
 Run:
 
-    $ make bench
-    go test -v -bench=.
+    $ make test
+    go test -v .
     === RUN TestLD
     --- PASS: TestLD (0.02s)
     === RUN TestGL
-    --- PASS: TestGL (0.02s)
+    --- FAIL: TestGL (0.02s)
+        language_detection_test.go:104: fixtures/pg12987.txt: got nb, want one of [da]
+        language_detection_test.go:104: fixtures/pg12987.txt: got nb, want one of [da]
     === RUN TestFR
-    --- PASS: TestFR (0.24s)
+    --- PASS: TestFR (0.25s)
     === RUN TestCL
     --- PASS: TestCL (0.03s)
+    FAIL
+    exit status 1
+    FAIL    github.com/miku/roundup-langdetect  0.378s
+    make: *** [test] Error 1
+
+    $ make bench
+    go test -v -test.bench=. -test.run xxx
     PASS
-    BenchmarkLD8k        300       5239412 ns/op
-    BenchmarkLD32k       100      13962661 ns/op
-    BenchmarkGL8k        200       8263652 ns/op
-    BenchmarkGL32k       100      13360719 ns/op
-    BenchmarkFR8k         10     119532226 ns/op
-    BenchmarkFR32k        10     119533394 ns/op
-    BenchmarkCL8k       1000       1528074 ns/op
-    BenchmarkCL32k       300       5430894 ns/op
-    ok      github.com/miku/roundup-langdetect  14.296s
+    BenchmarkLD8k        300       5297970 ns/op
+    BenchmarkLD32k       100      14129548 ns/op
+    BenchmarkGL8k        200       8593321 ns/op
+    BenchmarkGL32k       100      13808069 ns/op
+    BenchmarkFR8k         10     126377321 ns/op
+    BenchmarkFR32k        10     128064015 ns/op
+    BenchmarkCL8k       1000       1526382 ns/op
+    BenchmarkCL32k       300       5664950 ns/op
+    ok      github.com/miku/roundup-langdetect  14.428s
