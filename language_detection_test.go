@@ -53,9 +53,17 @@ func TestLD(t *testing.T) {
 		for _, size := range []int64{8192, 32768} {
 			io.CopyN(buf, reader, size)
 			result := langdetect.DetectLanguage(buf.Bytes(), "")
-			if fmt.Sprintf("%s", result) != c.lang[0] {
-				t.Errorf("got %s, want %s", result, c.lang[0])
+			code := fmt.Sprintf("%s", result)
+			hit := false
+			for _, l := range c.lang {
+				if code == l {
+					hit = true
+				}
 			}
+			if !hit {
+				t.Errorf("%s: got %s, want one of %+v", c.fn, code, c.lang)
+			}
+
 		}
 	}
 }
@@ -122,7 +130,7 @@ func BenchmarkGL8k(b *testing.B) {
 		for n := 0; n < b.N; n++ {
 			_, err := guesslanguage.Guess(buf.String())
 			if err != nil {
-				b.Errorf("in %s: %s", t.fn, err)
+				b.Errorf("%s: %s", t.fn, err)
 			}
 		}
 	}
@@ -150,8 +158,14 @@ func TestFR(t *testing.T) {
 			io.CopyN(buf, reader, size)
 			result := franco.DetectOne(buf.String())
 			code := iso3to2[result.Code]
-			if code != c.lang[0] {
-				t.Errorf("got %s, want %s", code, c.lang[0])
+			hit := false
+			for _, l := range c.lang {
+				if code == l {
+					hit = true
+				}
+			}
+			if !hit {
+				t.Errorf("%s: got %s, want one of %+v", c.fn, code, c.lang)
 			}
 		}
 	}
@@ -190,8 +204,14 @@ func TestCL(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			if string(code) != c.lang[0] {
-				t.Errorf("got %s, want %s", code, c.lang[0])
+			hit := false
+			for _, l := range c.lang {
+				if string(code) == l {
+					hit = true
+				}
+			}
+			if !hit {
+				t.Errorf("%s: got %s, want one of %+v", c.fn, string(code), c.lang)
 			}
 		}
 	}
