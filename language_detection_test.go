@@ -24,6 +24,8 @@ var tests = []struct {
 	{fn: "fixtures/30232-0.txt", lang: []string{"hu"}},
 	{fn: "fixtures/ai-50-aHR0cDovL2R4LmRvaS5vcmcvMTAuMTUxNS9qZWVoLTE5OTYtMi0zMTg", lang: []string{"fr"}},
 	{fn: "fixtures/ai-50-aHR0cDovL2R4LmRvaS5vcmcvMTAuMTQzMTUvZXZ0aC0xOTY0LTA3MDE", lang: []string{"de", "el"}},
+	{fn: "fixtures/ai-50-aHR0cDovL2R4LmRvaS5vcmcvMTAuNzc2Ny9zdXMtMjAxMy0wMTA0", lang: []string{"de"}},
+	{fn: "fixtures/ai-50-aHR0cDovL2R4LmRvaS5vcmcvMTAuMTUxNS9qZWVoLTE5OTQtMi0zMTI", lang: []string{"fr", "en"}},
 	{fn: "fixtures/pg12987.txt", lang: []string{"da"}},
 	{fn: "fixtures/pg17489.txt", lang: []string{"fr"}},
 	{fn: "fixtures/pg29640.txt", lang: []string{"es"}},
