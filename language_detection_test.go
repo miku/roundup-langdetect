@@ -24,8 +24,8 @@ var tests = []struct {
 	{fn: "fixtures/30232-0.txt", lang: []string{"hu"}},
 	{fn: "fixtures/ai-50-aHR0cDovL2R4LmRvaS5vcmcvMTAuMTUxNS9qZWVoLTE5OTYtMi0zMTg", lang: []string{"fr"}},
 	{fn: "fixtures/ai-50-aHR0cDovL2R4LmRvaS5vcmcvMTAuMTQzMTUvZXZ0aC0xOTY0LTA3MDE", lang: []string{"de", "el"}},
-	{fn: "fixtures/pg12987.txt", lang: []string{"da", ""}},
-	{fn: "fixtures/pg17489.txt", lang: []string{"fr", ""}},
+	{fn: "fixtures/pg12987.txt", lang: []string{"da", "nb"}},
+	{fn: "fixtures/pg17489.txt", lang: []string{"fr"}},
 }
 
 var iso3to2 = map[string]string{
@@ -94,8 +94,14 @@ func TestGL(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			if result != c.lang[0] {
-				t.Errorf("got %s, want %s", result, c.lang[0])
+			hit := false
+			for _, l := range c.lang {
+				if result == l {
+					hit = true
+				}
+			}
+			if !hit {
+				t.Errorf("got %s, want one of %+v", result, c.lang)
 			}
 		}
 	}
