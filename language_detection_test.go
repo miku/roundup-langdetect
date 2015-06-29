@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/endeveit/guesslanguage"
+	"github.com/jbowles/cld2_nlpt"
 	"github.com/kapsteur/franco"
 	"github.com/taruti/langdetect"
 )
@@ -165,6 +166,30 @@ func BenchmarkFR32k(b *testing.B) {
 		io.CopyN(buf, reader, 32*1024)
 		for n := 0; n < b.N; n++ {
 			franco.DetectOne(buf.String())
+		}
+	}
+}
+
+func BenchmarkCL8k(b *testing.B) {
+	for _, t := range tests {
+		reader := NewReader(t.fn)
+		buf := new(bytes.Buffer)
+		io.CopyN(buf, reader, 8*1024)
+		s := buf.String()
+		for n := 0; n < b.N; n++ {
+			cld2_nlpt.DetectLanguage(len(s), s, "code")
+		}
+	}
+}
+
+func BenchmarkCL32k(b *testing.B) {
+	for _, t := range tests {
+		reader := NewReader(t.fn)
+		buf := new(bytes.Buffer)
+		io.CopyN(buf, reader, 32*1024)
+		s := buf.String()
+		for n := 0; n < b.N; n++ {
+			cld2_nlpt.DetectLanguage(len(s), s, "code")
 		}
 	}
 }
