@@ -176,6 +176,24 @@ func BenchmarkFR32k(b *testing.B) {
 	}
 }
 
+func TestCL(t *testing.T) {
+	for _, c := range tests {
+		reader := NewReader(c.fn)
+		buf := new(bytes.Buffer)
+		for _, size := range []int64{8192, 32768} {
+			io.CopyN(buf, reader, size)
+			s := buf.String()
+			code, err := cld2_nlpt.DetectLanguage(len(s), s, "code")
+			if err != nil {
+				t.Error(err)
+			}
+			if string(code) != c.lang[0] {
+				t.Errorf("got %s, want %s", code, c.lang[0])
+			}
+		}
+	}
+}
+
 func BenchmarkCL8k(b *testing.B) {
 	for _, t := range tests {
 		reader := NewReader(t.fn)
