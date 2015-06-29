@@ -33,6 +33,7 @@ var tests = []struct {
 	{fn: "fixtures/pg46456.txt", lang: []string{"la", "en"}},
 }
 
+// map some iso689-3 codes to iso689-2
 var iso3to2 = map[string]string{
 	"hun": "hu",
 	"fra": "fr",
