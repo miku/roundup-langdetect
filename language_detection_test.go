@@ -101,7 +101,7 @@ func TestGL(t *testing.T) {
 				}
 			}
 			if !hit {
-				t.Errorf("got %s, want one of %+v", result, c.lang)
+				t.Errorf("%s: got %s, want one of %+v", c.fn, result, c.lang)
 			}
 		}
 	}
