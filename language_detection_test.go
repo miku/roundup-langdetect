@@ -26,6 +26,9 @@ var tests = []struct {
 	{fn: "fixtures/ai-50-aHR0cDovL2R4LmRvaS5vcmcvMTAuMTQzMTUvZXZ0aC0xOTY0LTA3MDE", lang: []string{"de", "el"}},
 	{fn: "fixtures/pg12987.txt", lang: []string{"da"}},
 	{fn: "fixtures/pg17489.txt", lang: []string{"fr"}},
+	{fn: "fixtures/pg29640.txt", lang: []string{"es"}},
+	{fn: "fixtures/pg29409.txt", lang: []string{"it", "en"}},
+	{fn: "fixtures/pg46456.txt", lang: []string{"la", "en"}},
 }
 
 var iso3to2 = map[string]string{
