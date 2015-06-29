@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -26,12 +27,33 @@ var tests = []struct {
 	{fn: "fixtures/pg17489.txt", lang: []string{"fr", ""}},
 }
 
+var iso3to2 = map[string]string{
+	"hun": "hu",
+	"fra": "fr",
+	"deu": "de",
+	"dan": "da",
+}
+
 func NewReader(filename string) io.Reader {
 	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return bufio.NewReader(file)
+}
+
+func TestLD(t *testing.T) {
+	for _, c := range tests {
+		reader := NewReader(c.fn)
+		buf := new(bytes.Buffer)
+		for _, size := range []int64{8192, 32768} {
+			io.CopyN(buf, reader, size)
+			result := langdetect.DetectLanguage(buf.Bytes(), "")
+			if fmt.Sprintf("%s", result) != c.lang[0] {
+				t.Errorf("got %s, want %s", result, c.lang[0])
+			}
+		}
+	}
 }
 
 func BenchmarkLD8k(b *testing.B) {
@@ -52,6 +74,28 @@ func BenchmarkLD32k(b *testing.B) {
 		io.CopyN(buf, reader, 32*1024)
 		for n := 0; n < b.N; n++ {
 			langdetect.DetectLanguage(buf.Bytes(), "")
+		}
+	}
+}
+
+func TestGL(t *testing.T) {
+	for _, c := range tests {
+		// in fixtures/30232-0.txt: Input string contains invalid UTF-8-encoded runes
+		if c.fn == "fixtures/30232-0.txt" {
+			continue
+		}
+		reader := NewReader(c.fn)
+		buf := new(bytes.Buffer)
+		for _, size := range []int64{8192, 32768} {
+			io.CopyN(buf, reader, size)
+			var result interface{}
+			result, err := guesslanguage.Guess(buf.String())
+			if err != nil {
+				t.Error(err)
+			}
+			if result != c.lang[0] {
+				t.Errorf("got %s, want %s", result, c.lang[0])
+			}
 		}
 	}
 }
@@ -83,6 +127,21 @@ func BenchmarkGL32k(b *testing.B) {
 			_, err := guesslanguage.Guess(buf.String())
 			if err != nil {
 				b.Error(err)
+			}
+		}
+	}
+}
+
+func TestFR(t *testing.T) {
+	for _, c := range tests {
+		reader := NewReader(c.fn)
+		buf := new(bytes.Buffer)
+		for _, size := range []int64{8192, 32768} {
+			io.CopyN(buf, reader, size)
+			result := franco.DetectOne(buf.String())
+			code := iso3to2[result.Code]
+			if code != c.lang[0] {
+				t.Errorf("got %s, want %s", code, c.lang[0])
 			}
 		}
 	}
