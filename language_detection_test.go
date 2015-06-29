@@ -41,6 +41,15 @@ var iso3to2 = map[string]string{
 	"dan": "da",
 }
 
+func stringInSlice(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}
+
 func NewReader(filename string) io.Reader {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -57,16 +66,9 @@ func TestLD(t *testing.T) {
 			io.CopyN(buf, reader, size)
 			result := langdetect.DetectLanguage(buf.Bytes(), "")
 			code := fmt.Sprintf("%s", result)
-			hit := false
-			for _, l := range c.lang {
-				if code == l {
-					hit = true
-				}
-			}
-			if !hit {
+			if !stringInSlice(code, c.lang) {
 				t.Errorf("%s: got %s, want one of %+v", c.fn, code, c.lang)
 			}
-
 		}
 	}
 }
@@ -103,18 +105,11 @@ func TestGL(t *testing.T) {
 		buf := new(bytes.Buffer)
 		for _, size := range []int64{8192, 32768} {
 			io.CopyN(buf, reader, size)
-			var result interface{}
 			result, err := guesslanguage.Guess(buf.String())
 			if err != nil {
 				t.Error(err)
 			}
-			hit := false
-			for _, l := range c.lang {
-				if result == l {
-					hit = true
-				}
-			}
-			if !hit {
+			if !stringInSlice(result, c.lang) {
 				t.Errorf("%s: got %s, want one of %+v", c.fn, result, c.lang)
 			}
 		}
@@ -161,13 +156,7 @@ func TestFR(t *testing.T) {
 			io.CopyN(buf, reader, size)
 			result := franco.DetectOne(buf.String())
 			code := iso3to2[result.Code]
-			hit := false
-			for _, l := range c.lang {
-				if code == l {
-					hit = true
-				}
-			}
-			if !hit {
+			if !stringInSlice(code, c.lang) {
 				t.Errorf("%s: got %s, want one of %+v", c.fn, code, c.lang)
 			}
 		}
@@ -207,13 +196,7 @@ func TestCL(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			hit := false
-			for _, l := range c.lang {
-				if string(code) == l {
-					hit = true
-				}
-			}
-			if !hit {
+			if !stringInSlice(string(code), c.lang) {
 				t.Errorf("%s: got %s, want one of %+v", c.fn, string(code), c.lang)
 			}
 		}
